@@ -32,9 +32,9 @@ const Tetris = {
         /** Минимальная скорость падения (мс) */
         MIN_DROP_SPEED: 100,
         /** Смещение стакана по горизонтали */
-        CUP_OFFSET: 20,
+        CUP_OFFSET: 28,
         /** Отступ подсказок от правой стенки стакана */
-        HINTS_OFFSET_FROM_CUP: 3,
+        HINTS_OFFSET_FROM_CUP: 1,
         /** Номер строки начала информации слева */
         INFO_START_ROW: 1,
         /** Номер строки начала превью следующей фигуры */
@@ -96,7 +96,7 @@ const Tetris = {
         cursorInterval: null,
         dropSpeed: 1000,
         showHints: true,
-        showControls: true,
+        showControls: true
     },
 
     /**
@@ -145,38 +145,37 @@ const Tetris = {
         
         this.resetGame();
         this.startGame();
-
+        
         document.addEventListener('keydown', this.handleInput.bind(this));
         this.initTouchZones();
     },
 
     /**
      * Инициализация тач-зон для смартфонов
-     * zone-left (лево) — влево
-     * zone-right (право) — вправо
-     * zone-top (центр верх) — поворот
-     * zone-bottom (низ) — сброс
-     * @function
-     * @memberof Tetris
      */
     initTouchZones() {
         const zoneLeft = document.querySelector('.zone-left');
         const zoneRight = document.querySelector('.zone-right');
         const zoneTop = document.querySelector('.zone-top');
         const zoneBottom = document.querySelector('.zone-bottom');
+        if (zoneLeft) zoneLeft.addEventListener('touchstart', (e) => { e.preventDefault(); this.moveLeft(); }, { passive: false });
+        if (zoneRight) zoneRight.addEventListener('touchstart', (e) => { e.preventDefault(); this.moveRight(); }, { passive: false });
+        if (zoneTop) zoneTop.addEventListener('touchstart', (e) => { e.preventDefault(); this.rotate(); }, { passive: false });
+        if (zoneBottom) zoneBottom.addEventListener('touchstart', (e) => { e.preventDefault(); this.hardDrop(); }, { passive: false });
+    },
 
-        if (zoneLeft) {
-            zoneLeft.addEventListener('touchstart', (e) => { e.preventDefault(); this.moveLeft(); }, { passive: false });
-        }
-        if (zoneRight) {
-            zoneRight.addEventListener('touchstart', (e) => { e.preventDefault(); this.moveRight(); }, { passive: false });
-        }
-        if (zoneTop) {
-            zoneTop.addEventListener('touchstart', (e) => { e.preventDefault(); this.rotate(); }, { passive: false });
-        }
-        if (zoneBottom) {
-            zoneBottom.addEventListener('touchstart', (e) => { e.preventDefault(); this.hardDrop(); }, { passive: false });
-        }
+    /**
+     * Запуск мигания курсора
+     */
+    startCursorBlink() {
+        if (this.state.cursorInterval) clearInterval(this.state.cursorInterval);
+        this.state.cursorInterval = setInterval(() => {
+            if (this.state.isPlaying && !this.state.isGameOver) this.render();
+        }, 500);
+    },
+
+    stopCursorBlink() {
+        if (this.state.cursorInterval) { clearInterval(this.state.cursorInterval); this.state.cursorInterval = null; }
     },
 
     /**
@@ -225,7 +224,7 @@ const Tetris = {
         this.state.isPaused = false;
         this.state.isGameOver = false;
         this.state.dropSpeed = this.CONSTANTS.BASE_DROP_SPEED;
-
+        
         this.state.nextPiece = this.getNextTetromino();
         this.spawnPiece();
 
@@ -258,34 +257,6 @@ const Tetris = {
         if (this.state.dropInterval) {
             clearInterval(this.state.dropInterval);
             this.state.dropInterval = null;
-        }
-    },
-
-    /**
-     * Запуск мигания курсора
-     * @function
-     * @memberof Tetris
-     */
-    startCursorBlink() {
-        if (this.state.cursorInterval) {
-            clearInterval(this.state.cursorInterval);
-        }
-        this.state.cursorInterval = setInterval(() => {
-            if (this.state.isPlaying && !this.state.isGameOver) {
-                this.render();
-            }
-        }, 500);
-    },
-
-    /**
-     * Остановка мигания курсора
-     * @function
-     * @memberof Tetris
-     */
-    stopCursorBlink() {
-        if (this.state.cursorInterval) {
-            clearInterval(this.state.cursorInterval);
-            this.state.cursorInterval = null;
         }
     },
 
@@ -690,6 +661,25 @@ const Tetris = {
             display[INFO_START_ROW + 2][i] = infoScore[i];
         }
 
+        // Следующая фигура
+        if (this.state.nextPiece && this.state.showHints) {
+            const shape = this.state.nextPiece.shape;
+            const nextCol = CUP_OFFSET - 9;
+
+            for (let r = 0; r < shape.length; r++) {
+                for (let c = 0; c < shape[r].length; c++) {
+                    if (shape[r][c] === 1) {
+                        const displayRow = NEXT_PIECE_START_ROW + r;
+                        const displayCol = nextCol + c * 2;
+                        if (displayRow < DISPLAY_HEIGHT && displayCol + 1 < DISPLAY_WIDTH) {
+                            display[displayRow][displayCol] = FILLED_CELL[0];
+                            display[displayRow][displayCol + 1] = FILLED_CELL[1];
+                        }
+                    }
+                }
+            }
+        }
+
         // Подсказки по управлению (справа от стакана)
         if (this.state.showControls) {
             const hintsOffset = CUP_OFFSET + CUP_WIDTH - 1 + HINTS_OFFSET_FROM_CUP;
@@ -743,12 +733,12 @@ const Tetris = {
         }
         
         // Цифровые клавиши для управления подсказками
-        // if (event.key === '0') {
-        //     event.preventDefault();
-        //     this.state.showControls = !this.state.showControls;
-        //     this.render();
-        //     return;
-        // }
+        if (event.key === '0') {
+            event.preventDefault();
+            this.state.showControls = !this.state.showControls;
+            this.render();
+            return;
+        }
         
         if (event.key === '1') {
             event.preventDefault();
