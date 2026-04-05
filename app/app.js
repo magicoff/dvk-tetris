@@ -690,35 +690,6 @@ const Tetris = {
             display[INFO_START_ROW + 2][i] = infoScore[i];
         }
 
-        // === СПРАВА: Информация и подсказки ===
-        // Рекорд (строка 1)
-        const highScoreStr = `HIGH: ${String(this.state.highScore).padStart(6, ' ')}`;
-        for (let i = 0; i < highScoreStr.length && 55 + i < DISPLAY_WIDTH; i++) {
-            display[1][55 + i] = highScoreStr[i];
-        }
-
-        // Следующая фигура (строка 3, справа)
-        if (this.state.nextPiece && this.state.showHints) {
-            const nextStr = 'NEXT:';
-            for (let i = 0; i < nextStr.length && 55 + i < DISPLAY_WIDTH; i++) {
-                display[3][55 + i] = nextStr[i];
-            }
-
-            const shape = this.state.nextPiece.shape;
-            for (let r = 0; r < shape.length; r++) {
-                for (let c = 0; c < shape[r].length; c++) {
-                    if (shape[r][c] === 1) {
-                        const displayRow = 4 + r;
-                        const displayCol = 55 + c * 2;
-                        if (displayRow < DISPLAY_HEIGHT && displayCol + 1 < DISPLAY_WIDTH) {
-                            display[displayRow][displayCol] = FILLED_CELL[0];
-                            display[displayRow][displayCol + 1] = FILLED_CELL[1];
-                        }
-                    }
-                }
-            }
-        }
-
         // Подсказки по управлению (справа от стакана)
         if (this.state.showControls) {
             const hintsOffset = CUP_OFFSET + CUP_WIDTH - 1 + HINTS_OFFSET_FROM_CUP;
