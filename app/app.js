@@ -630,8 +630,6 @@ const Tetris = {
             display[INFO_START_ROW + 2][i] = infoScore[i];
         }
 
-        }
-
         // === СПРАВА: Информация и подсказки ===
         // Рекорд (строка 1)
         const highScoreStr = `HIGH: ${String(this.state.highScore).padStart(6, ' ')}`;
@@ -662,24 +660,18 @@ const Tetris = {
             }
         }
 
-        // Подсказки управления справа (строки 10-15)
-        const rightHints = [
-            '7:LEFT',
-            '9:RIGHT',
-            '8:TURN',
-            '4:DOWN',
-            '5:DROP',
-            '0:HELP'
-        ];
-        
-        for (let idx = 0; idx < rightHints.length; idx++) {
-            const hint = rightHints[idx];
-            const row = 10 + idx;
-            if (row < DISPLAY_HEIGHT) {
-                for (let i = 0; i < hint.length && 55 + i < DISPLAY_WIDTH; i++) {
-                    display[row][55 + i] = hint[i];
+        // Подсказки по управлению (справа от стакана)
+        if (this.state.showControls) {
+            const hintsOffset = CUP_OFFSET + CUP_WIDTH - 1 + HINTS_OFFSET_FROM_CUP;
+
+            this.controlHints.forEach((hint, index) => {
+                const row = CONTROLS_START_ROW + index;
+                if (row < DISPLAY_HEIGHT) {
+                    for (let i = 0; i < hint.length && hintsOffset + i < DISPLAY_WIDTH; i++) {
+                        display[row][hintsOffset + i] = hint[i];
+                    }
                 }
-            }
+            });
         }
 
         // Вывод на дисплей
