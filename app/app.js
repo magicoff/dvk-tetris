@@ -630,16 +630,29 @@ const Tetris = {
             display[INFO_START_ROW + 2][i] = infoScore[i];
         }
 
-        // Следующая фигура
-        if (this.state.nextPiece && this.state.showHints) {
-            const shape = this.state.nextPiece.shape;
-            const nextCol = CUP_OFFSET - 9;
+        }
 
+        // === СПРАВА: Информация и подсказки ===
+        // Рекорд (строка 1)
+        const highScoreStr = `HIGH: ${String(this.state.highScore).padStart(6, ' ')}`;
+        for (let i = 0; i < highScoreStr.length && 55 + i < DISPLAY_WIDTH; i++) {
+            display[1][55 + i] = highScoreStr[i];
+        }
+
+        // Следующая фигура (строка 3, рядом справа)
+        if (this.state.nextPiece && this.state.showHints) {
+            const nextStr = 'NEXT:';
+            for (let i = 0; i < nextStr.length && 55 + i < DISPLAY_WIDTH; i++) {
+                display[3][55 + i] = nextStr[i];
+            }
+
+            // Фигура
+            const shape = this.state.nextPiece.shape;
             for (let r = 0; r < shape.length; r++) {
                 for (let c = 0; c < shape[r].length; c++) {
                     if (shape[r][c] === 1) {
-                        const displayRow = NEXT_PIECE_START_ROW + r;
-                        const displayCol = nextCol + c * 2;
+                        const displayRow = 4 + r;
+                        const displayCol = 55 + c * 2;
                         if (displayRow < DISPLAY_HEIGHT && displayCol + 1 < DISPLAY_WIDTH) {
                             display[displayRow][displayCol] = FILLED_CELL[0];
                             display[displayRow][displayCol + 1] = FILLED_CELL[1];
@@ -649,18 +662,24 @@ const Tetris = {
             }
         }
 
-        // Подсказки по управлению (справа от стакана)
-        if (this.state.showControls) {
-            const hintsOffset = CUP_OFFSET + CUP_WIDTH - 1 + HINTS_OFFSET_FROM_CUP;
-
-            this.controlHints.forEach((hint, index) => {
-                const row = CONTROLS_START_ROW + index;
-                if (row < DISPLAY_HEIGHT) {
-                    for (let i = 0; i < hint.length && hintsOffset + i < DISPLAY_WIDTH; i++) {
-                        display[row][hintsOffset + i] = hint[i];
-                    }
+        // Подсказки управления справа (строки 10-15)
+        const rightHints = [
+            '7:LEFT',
+            '9:RIGHT',
+            '8:TURN',
+            '4:DOWN',
+            '5:DROP',
+            '0:HELP'
+        ];
+        
+        for (let idx = 0; idx < rightHints.length; idx++) {
+            const hint = rightHints[idx];
+            const row = 10 + idx;
+            if (row < DISPLAY_HEIGHT) {
+                for (let i = 0; i < hint.length && 55 + i < DISPLAY_WIDTH; i++) {
+                    display[row][55 + i] = hint[i];
                 }
-            });
+            }
         }
 
         // Вывод на дисплей
