@@ -23,7 +23,7 @@ body {
 /* Text Display - 80x24 characters */
 #display {
     font-family: monospace;
-    font-size: calc(100vh / 28);
+    font-size: calc(100vh / 56);
     line-height: 1.1;
     color: #0f0;
     text-shadow: 0 0 5px #0f0;
@@ -48,7 +48,7 @@ body {
 
 .glow-layer #display {
     font-family: monospace;
-    font-size: calc(100vh / 28);
+    font-size: calc(100vh / 56);
     line-height: 1.2;
     color: #0f0;
     white-space: pre;
