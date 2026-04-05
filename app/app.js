@@ -32,9 +32,9 @@ const Tetris = {
         /** Минимальная скорость падения (мс) */
         MIN_DROP_SPEED: 100,
         /** Смещение стакана по горизонтали */
-        CUP_OFFSET: 28,
+        CUP_OFFSET: 20,
         /** Отступ подсказок от правой стенки стакана */
-        HINTS_OFFSET_FROM_CUP: 1,
+        HINTS_OFFSET_FROM_CUP: 5,
         /** Номер строки начала информации слева */
         INFO_START_ROW: 1,
         /** Номер строки начала превью следующей фигуры */
@@ -95,7 +95,7 @@ const Tetris = {
         dropInterval: null,
         dropSpeed: 1000,
         showHints: true,
-        showControls: true
+        showControls: true,
     },
 
     /**
@@ -637,14 +637,13 @@ const Tetris = {
             display[1][55 + i] = highScoreStr[i];
         }
 
-        // Следующая фигура (строка 3, рядом справа)
+        // Следующая фигура (строка 3, справа)
         if (this.state.nextPiece && this.state.showHints) {
             const nextStr = 'NEXT:';
             for (let i = 0; i < nextStr.length && 55 + i < DISPLAY_WIDTH; i++) {
                 display[3][55 + i] = nextStr[i];
             }
 
-            // Фигура
             const shape = this.state.nextPiece.shape;
             for (let r = 0; r < shape.length; r++) {
                 for (let c = 0; c < shape[r].length; c++) {
@@ -713,12 +712,12 @@ const Tetris = {
         }
         
         // Цифровые клавиши для управления подсказками
-        if (event.key === '0') {
-            event.preventDefault();
-            this.state.showControls = !this.state.showControls;
-            this.render();
-            return;
-        }
+        // if (event.key === '0') {
+        //     event.preventDefault();
+        //     this.state.showControls = !this.state.showControls;
+        //     this.render();
+        //     return;
+        // }
         
         if (event.key === '1') {
             event.preventDefault();
