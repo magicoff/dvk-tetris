@@ -7,15 +7,22 @@
     <meta name="description" content="Классическая игра Тетрис в текстовом режиме">
     <meta name="theme-color" content="#00ff00">
     <title>TETRIS</title>
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 
 <body>
     <div class="game-container">
         <div class="glow-layer" id="glow-layer"></div>
         <div id="display"></div>
+        <!-- Тач-зоны для мобильных -->
+        <div class="touch-zones">
+            <div class="touch-zone zone-top"></div>
+            <div class="touch-zone zone-left"></div>
+            <div class="touch-zone zone-right"></div>
+            <div class="touch-zone zone-bottom"></div>
+        </div>
     </div>
-    <script src="app/app.js?v=2"></script>
+    <script src="app/app.js?v=4"></script>
 </body>
 
 </html>

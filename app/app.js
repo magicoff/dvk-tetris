@@ -145,8 +145,38 @@ const Tetris = {
         
         this.resetGame();
         this.startGame();
-        
+
         document.addEventListener('keydown', this.handleInput.bind(this));
+        this.initTouchZones();
+    },
+
+    /**
+     * Инициализация тач-зон для смартфонов
+     * zone-left (лево) — влево
+     * zone-right (право) — вправо
+     * zone-top (центр верх) — поворот
+     * zone-bottom (низ) — сброс
+     * @function
+     * @memberof Tetris
+     */
+    initTouchZones() {
+        const zoneLeft = document.querySelector('.zone-left');
+        const zoneRight = document.querySelector('.zone-right');
+        const zoneTop = document.querySelector('.zone-top');
+        const zoneBottom = document.querySelector('.zone-bottom');
+
+        if (zoneLeft) {
+            zoneLeft.addEventListener('touchstart', (e) => { e.preventDefault(); this.moveLeft(); }, { passive: false });
+        }
+        if (zoneRight) {
+            zoneRight.addEventListener('touchstart', (e) => { e.preventDefault(); this.moveRight(); }, { passive: false });
+        }
+        if (zoneTop) {
+            zoneTop.addEventListener('touchstart', (e) => { e.preventDefault(); this.rotate(); }, { passive: false });
+        }
+        if (zoneBottom) {
+            zoneBottom.addEventListener('touchstart', (e) => { e.preventDefault(); this.hardDrop(); }, { passive: false });
+        }
     },
 
     /**
