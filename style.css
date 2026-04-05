@@ -16,14 +16,14 @@ body {
 .game-container {
     position: relative;
     text-align: center;
-    padding: 20px;
+    padding: 1vh;
     background: #000;
 }
 
 /* Text Display - 80x24 characters */
 #display {
     font-family: monospace;
-    font-size: 16px;
+    font-size: calc(100vh / 28);
     line-height: 1.1;
     color: #0f0;
     text-shadow: 0 0 5px #0f0;
@@ -39,7 +39,7 @@ body {
 /* Glow layer - creates soft blur effect */
 .glow-layer {
     position: absolute;
-    top: 20px;
+    top: 1vh;
     left: 50%;
     transform: translateX(-50%);
     pointer-events: none;
@@ -48,7 +48,7 @@ body {
 
 .glow-layer #display {
     font-family: monospace;
-    font-size: 16px;
+    font-size: calc(100vh / 28);
     line-height: 1.2;
     color: #0f0;
     white-space: pre;
