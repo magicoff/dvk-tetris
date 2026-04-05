@@ -93,7 +93,6 @@ const Tetris = {
         isPaused: false,
         isGameOver: false,
         dropInterval: null,
-        cursorInterval: null,
         dropSpeed: 1000,
         showHints: true,
         showControls: true
@@ -147,35 +146,6 @@ const Tetris = {
         this.startGame();
         
         document.addEventListener('keydown', this.handleInput.bind(this));
-        this.initTouchZones();
-    },
-
-    /**
-     * Инициализация тач-зон для смартфонов
-     */
-    initTouchZones() {
-        const zoneLeft = document.querySelector('.zone-left');
-        const zoneRight = document.querySelector('.zone-right');
-        const zoneTop = document.querySelector('.zone-top');
-        const zoneBottom = document.querySelector('.zone-bottom');
-        if (zoneLeft) zoneLeft.addEventListener('touchstart', (e) => { e.preventDefault(); this.moveLeft(); }, { passive: false });
-        if (zoneRight) zoneRight.addEventListener('touchstart', (e) => { e.preventDefault(); this.moveRight(); }, { passive: false });
-        if (zoneTop) zoneTop.addEventListener('touchstart', (e) => { e.preventDefault(); this.rotate(); }, { passive: false });
-        if (zoneBottom) zoneBottom.addEventListener('touchstart', (e) => { e.preventDefault(); this.hardDrop(); }, { passive: false });
-    },
-
-    /**
-     * Запуск мигания курсора
-     */
-    startCursorBlink() {
-        if (this.state.cursorInterval) clearInterval(this.state.cursorInterval);
-        this.state.cursorInterval = setInterval(() => {
-            if (this.state.isPlaying && !this.state.isGameOver) this.render();
-        }, 500);
-    },
-
-    stopCursorBlink() {
-        if (this.state.cursorInterval) { clearInterval(this.state.cursorInterval); this.state.cursorInterval = null; }
     },
 
     /**
@@ -227,9 +197,8 @@ const Tetris = {
         
         this.state.nextPiece = this.getNextTetromino();
         this.spawnPiece();
-
+        
         this.startDropLoop();
-        this.startCursorBlink();
     },
 
     /**
@@ -838,8 +807,7 @@ const Tetris = {
         this.state.isGameOver = true;
         this.state.isPlaying = false;
         this.stopDropLoop();
-        this.stopCursorBlink();
-
+        
         this.showOverlay('GAME OVER', `FINAL SCORE: ${this.state.score}\nPress ENTER or SPACE to restart`);
     },
 
