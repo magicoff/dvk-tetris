@@ -93,6 +93,7 @@ const Tetris = {
         isPaused: false,
         isGameOver: false,
         dropInterval: null,
+        cursorInterval: null,
         dropSpeed: 1000,
         showHints: true,
         showControls: true,
@@ -194,11 +195,12 @@ const Tetris = {
         this.state.isPaused = false;
         this.state.isGameOver = false;
         this.state.dropSpeed = this.CONSTANTS.BASE_DROP_SPEED;
-        
+
         this.state.nextPiece = this.getNextTetromino();
         this.spawnPiece();
-        
+
         this.startDropLoop();
+        this.startCursorBlink();
     },
 
     /**
@@ -226,6 +228,34 @@ const Tetris = {
         if (this.state.dropInterval) {
             clearInterval(this.state.dropInterval);
             this.state.dropInterval = null;
+        }
+    },
+
+    /**
+     * Запуск мигания курсора
+     * @function
+     * @memberof Tetris
+     */
+    startCursorBlink() {
+        if (this.state.cursorInterval) {
+            clearInterval(this.state.cursorInterval);
+        }
+        this.state.cursorInterval = setInterval(() => {
+            if (this.state.isPlaying && !this.state.isGameOver) {
+                this.render();
+            }
+        }, 500);
+    },
+
+    /**
+     * Остановка мигания курсора
+     * @function
+     * @memberof Tetris
+     */
+    stopCursorBlink() {
+        if (this.state.cursorInterval) {
+            clearInterval(this.state.cursorInterval);
+            this.state.cursorInterval = null;
         }
     },
 
@@ -817,7 +847,8 @@ const Tetris = {
         this.state.isGameOver = true;
         this.state.isPlaying = false;
         this.stopDropLoop();
-        
+        this.stopCursorBlink();
+
         this.showOverlay('GAME OVER', `FINAL SCORE: ${this.state.score}\nPress ENTER or SPACE to restart`);
     },
 
