@@ -19,11 +19,10 @@ body {
 }
 
 #display {
-    font-family: monospace;
     font-size: calc(100vh / 40);
     line-height: 1.1;
-    color: #0f0;
-    text-shadow: 0 0 5px #0f0;
+    color: rgb(94, 188, 94);
+    text-shadow: 0 0 5px rgb(94, 188, 94);
     white-space: pre;
     background: #000;
     cursor: default;
@@ -39,23 +38,22 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     background: #000;
-    border: 3px solid #0f0;
+    border: 3px solid rgb(94, 188, 94);
     padding: 30px 40px;
     text-align: center;
     z-index: 100;
-    font-family: monospace;
-    color: #0f0;
-    box-shadow: 0 0 30px #0f0;
+    color: rgb(94, 188, 94);
+    box-shadow: 0 0 30px rgb(94, 188, 94);
 }
 
 #game-overlay div:first-child {
     font-size: 32px;
     font-weight: bold;
     margin-bottom: 15px;
-    text-shadow: 0 0 10px #0f0;
+    text-shadow: 0 0 10px rgb(94, 188, 94);
 }
 
 #game-overlay div:last-child {
     font-size: 14px;
-    text-shadow: 0 0 5px #0f0;
+    text-shadow: 0 0 5px rgb(94, 188, 94);
 }
