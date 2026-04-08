@@ -34,7 +34,7 @@ const Tetris = {
         /** Смещение стакана по горизонтали */
         CUP_OFFSET: 28,
         /** Отступ подсказок от правой стенки стакана */
-        HINTS_OFFSET_FROM_CUP: 1,
+        HINTS_OFFSET_FROM_CUP: 3,
         /** Номер строки начала информации слева */
         INFO_START_ROW: 1,
         /** Номер строки начала превью следующей фигуры */
@@ -102,11 +102,9 @@ const Tetris = {
      * DOM элементы
      * @type {Object}
      * @property {HTMLElement|null} display - Основной дисплей
-     * @property {HTMLElement|null} glowLayer - Слой свечения
      */
     elements: {
-        display: null,
-        glowLayer: null
+        display: null
     },
 
     /**
@@ -120,12 +118,12 @@ const Tetris = {
      * @type {string[]}
      */
     controlHints: [
-        '7:ЛЕВО 9:ПРАВО',
+        '7:ЛЕВО   9:ПРАВО',
         '8:ПОВОРОТ',
-        '4:НИЖЕ 5:СБРОС',
-        '1:СЛЕДУЮЩАЯ',
-        '0:СКРЫТЬ',
-        'ПРОБЕЛ:СБРОС'
+        '4:ВНИЗ   5:СБРОС',
+        '1:ПОКАЗАТЬ СЛЕДУЮЩ',
+        '0:СКРЫТЬ ЭТОТ ТЕКСТ',
+        'ПРОБЕЛ — СБРОС'
     ],
 
     /**
@@ -137,8 +135,7 @@ const Tetris = {
      */
     init() {
         this.elements.display = document.getElementById('display');
-        this.elements.glowLayer = document.getElementById('glow-layer');
-        
+
         // Загрузка рекорда из localStorage
         this.state.highScore = parseInt(localStorage.getItem('tetrisHighScore') || '0', 10);
         
@@ -615,19 +612,21 @@ const Tetris = {
         display[0][0] = cursor;
 
         // Информация (строки 1-3)
-        const infoLines = `СТРОК: ${this.state.lines}`;
-        const infoLevel = `УРОВЕНЬ: ${this.state.level}`;
-        const infoScore = `СЧЕТ: ${this.state.score}`;
+        const infoLines = `КОЛИЧ СТРОК: ${this.state.lines}`;
+        const infoLevel = `УРОВЕНЬ:     ${this.state.level}`;
+        const infoScore = `СЧЕТ:        ${this.state.score}`;
 
-        for (let i = 0; i < infoLines.length && i < CUP_OFFSET; i++) {
-            display[INFO_START_ROW][i] = infoLines[i];
+        const infoOffset = 1;
+
+        for (let i = 0; i < infoLines.length && infoOffset + i < CUP_OFFSET; i++) {
+            display[INFO_START_ROW][infoOffset + i] = infoLines[i];
         }
 
-        for (let i = 0; i < infoLevel.length && i < CUP_OFFSET; i++) {
-            display[INFO_START_ROW + 1][i] = infoLevel[i];
+        for (let i = 0; i < infoLevel.length && infoOffset + i < CUP_OFFSET; i++) {
+            display[INFO_START_ROW + 1][infoOffset + i] = infoLevel[i];
         }
-        for (let i = 0; i < infoScore.length && i < CUP_OFFSET; i++) {
-            display[INFO_START_ROW + 2][i] = infoScore[i];
+        for (let i = 0; i < infoScore.length && infoOffset + i < CUP_OFFSET; i++) {
+            display[INFO_START_ROW + 2][infoOffset + i] = infoScore[i];
         }
 
         // Следующая фигура
@@ -670,17 +669,6 @@ const Tetris = {
         }
 
         this.elements.display.textContent = output;
-
-        // Обновление glow-слоя без создания новых DOM-элементов
-        if (this.elements.glowLayer) {
-            let glowDisplay = this.elements.glowLayer.querySelector('#display');
-            if (!glowDisplay) {
-                glowDisplay = document.createElement('div');
-                glowDisplay.id = 'display';
-                this.elements.glowLayer.appendChild(glowDisplay);
-            }
-            glowDisplay.textContent = output;
-        }
     },
 
     /**
@@ -742,6 +730,12 @@ const Tetris = {
             case 'Escape':
                 event.preventDefault();
                 this.togglePause();
+                break;
+            case 'r':
+            case 'R':
+                event.preventDefault();
+                this.resetGame();
+                this.startGame();
                 break;
         }
     },
@@ -817,6 +811,7 @@ const Tetris = {
      * @memberof Tetris
      */
     resetGame() {
+        this.stopDropLoop();
         this.state.board = this.createBoard();
         this.state.score = 0;
         this.state.level = 1;
@@ -827,7 +822,7 @@ const Tetris = {
         this.state.currentPiece = null;
         this.state.nextPiece = null;
         this.bag = [];
-        
+
         this.render();
         this.hideOverlay();
     }
